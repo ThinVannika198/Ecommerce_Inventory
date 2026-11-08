@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt #INV{{ order.invoiceno }}</title>
+    <style>
+        body { font-family: "Courier New", monospace; background: #eee; margin: 0; padding: 20px; }
+        .receipt { width: 320px; margin: 0 auto; background: #fff; padding: 18px; color: #000; }
+        .center { text-align: center; }
+        h2, p { margin: 4px 0; }
+        hr { border: 0; border-top: 1px dashed #000; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        td { padding: 3px 0; vertical-align: top; }
+        .r { text-align: right; }
+        .total td { font-weight: bold; font-size: 15px; border-top: 1px solid #000; padding-top: 6px; }
+        .actions { text-align: center; margin-top: 16px; }
+        .actions a, .actions button { display: inline-block; padding: 10px 18px; margin: 4px; border: 0; border-radius: 6px; background: #155e83; color: #fff; text-decoration: none; cursor: pointer; font-size: 14px; }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .receipt { width: 100%; padding: 0; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="receipt">
+    <div class="center">
+        <h2>ComNika</h2>
+        <p>Sales Receipt</p>
+    </div>
+    <hr>
+
+    <p>Receipt: #INV{{ order.invoiceno }}</p>
+    <p>Date: {{ order.invoice_date|date:"M d, Y H:i" }}</p>
+    <p>Customer: {{ order.client.clientname|default:"Walk-in customer" }}</p>
+    <hr>
+
+    <table>
+        {% for item in items %}
+        <tr>
+            <td colspan="2">{{ item.productname }}</td>
+        </tr>
+        <tr>
+            <td>{{ item.qty }} × ${{ item.price|floatformat:2 }}</td>
+            <td class="r">${{ item.line_total|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td>TOTAL</td>
+            <td class="r">${{ order.total_amount|floatformat:2 }}</td>
+        </tr>
+    </table>
+
+    <hr>
+    <p>{{ order.invoicememo }}</p>
+    <hr>
+    <p class="center">Thank you for shopping with us!</p>
+</div>
+
+<div class="actions no-print">
+    <button onclick="window.print()">🖨 Print</button>
+    <a href="{% url 'pos' %}">New Sale</a>
+    <a href="{% url 'order_detail' order.invoiceno %}">View Order</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        body { background-color: #121212; color: #fff; font-family: sans-serif; padding: 40px; }
+        .container { max-width: 600px; margin: auto; background: #1e1e1e; padding: 30px; border-radius: 6px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #aaa; }
+        .form-group input { width: 100%; padding: 10px; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; }
+        .btn-submit { background: #fff; color: #000; border: none; padding: 12px 20px; font-weight: bold; width: 100%; cursor: pointer; border-radius: 4px; }
+        .errors { background: #7f1d1d; color: #fecaca; padding: 10px 16px; border-radius: 6px; margin-bottom: 18px; }
+        .errors ul { margin: 0; padding-left: 18px; }
+        .back { color: #aaa; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'cart_page' %}" class="back">← Back to cart</a>
+        <h1>Checkout</h1>
+        <p>Total to pay: <strong>${{ total_amount|floatformat:2 }}</strong></p>
+
+        {% if errors %}
+        <div class="errors">
+            <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="full_name">Full name</label>
+                <input type="text" id="full_name" name="full_name" value="{{ form.full_name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="shipping_address">Shipping address</label>
+                <input type="text" id="shipping_address" name="shipping_address" value="{{ form.shipping_address }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone_number">Phone number</label>
+                <input type="text" id="phone_number" name="phone_number" value="{{ form.phone_number }}" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Complete Order</button>
+        </form>
+    </div>
+</body>
+</html>

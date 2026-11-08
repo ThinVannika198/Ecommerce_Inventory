@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ComNika POS{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'images/invenicon.png' %}">
+    <!-- Load layout first, then dashboard overrides -->
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+{% with current=request.resolver_match.url_name %}
+
+    <!-- ============ HEADER ============ -->
+    <header class="app-header">
+        <div class="app-brand">
+            <button type="button" id="menu-toggle" class="app-burger" aria-label="Toggle menu">☰</button>
+            <span class="app-logo">🛒 ComNika <small>POS</small></span>
+        </div>
+
+        <div class="app-header-right">
+            {% comment %} <!-- Safe check for Cashier/Admin -->
+            {% if request.user.is_staff or user_role == 'admin' or user_role == 'cashier' %}
+                <a href="{% url 'pos' %}" class="app-new-sale">+ New Sale</a>
+            {% endif %} {% endcomment %}
+
+            <!-- Safe User Profile Block -->
+            <div class="app-user">
+                <span class="app-avatar">
+                    {% if request.user.is_authenticated %}
+                        {{ request.user.username|slice:":1"|upper }}
+                    {% else %}
+                        {{ user_username|slice:":1"|upper|default:"G" }}
+                    {% endif %}
+                </span>
+                <div class="app-user-text">
+                    <strong>
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.username }}
+                        {% else %}
+                            {{ user_username|default:"Guest" }}
+                        {% endif %}
+                    </strong>
+                    <small>
+                        {% if request.user.is_superuser %}
+                            Admin
+                        {% else %}
+                            {{ user_role|capfirst|default:"Staff" }}
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'logout_admin' %}" class="app-logout">Logout</a>
+            {% else %}
+                <a href="{% url 'login_admin' %}" class="app-logout app-login">Staff Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="app-sidebar" id="sidebar">
+        <nav>
+            <!-- Note: Links are always visible for testing. -->
+            <p class="app-group">Sales</p>
+            <a href="{% url 'pos' %}" class="{% if current == 'pos' %}active{% endif %}">
+                <span class="icon">🛒</span> <span>POS</span>
+            </a>
+            <a href="{% url 'orders' %}" class="{% if current == 'orders' or current == 'order_detail' %}active{% endif %}">
+                <span class="icon">🧾</span> <span>Orders</span>
+            </a>
+            <a href="{% url 'customers' %}" class="{% if current == 'customers' or current == 'add_customer' %}active{% endif %}">
+                <span class="icon">👥</span> <span>Customers</span>
+            </a>
+
+            <p class="app-group">Inventory</p>
+            <a href="{% url 'products' %}" class="{% if current == 'products' or current == 'add_product' %}active{% endif %}">
+                <span class="icon">👟</span> <span>Products</span>
+            </a>
+            <a href="{% url 'categories' %}" class="{% if current == 'categories' %}active{% endif %}">
+                <span class="icon">🗂️</span> <span>Categories</span>
+            </a>
+            <a href="{% url 'stock' %}" class="{% if current == 'stock' %}active{% endif %}">
+                <span class="icon">📦</span> <span>Stock</span>
+            </a>
+            <a href="{% url 'suppliers' %}" class="{% if current == 'suppliers' %}active{% endif %}">
+                <span class="icon">🚚</span> <span>Suppliers</span>
+            </a>
+
+            <p class="app-group">Management</p>
+            <a href="{% url 'dashboard' %}" class="{% if current == 'dashboard' %}active{% endif %}">
+                <span class="icon">📊</span> <span>Dashboard</span>
+            </a>
+            <a href="{% url 'employees' %}" class="{% if current == 'employees' %}active{% endif %}">
+                <span class="icon">👤</span> <span>Employees</span>
+            </a>
+            <a href="{% url 'report' %}" class="{% if current == 'report' %}active{% endif %}">
+                <span class="icon">📈</span> <span>Report</span>
+            </a>
+        </nav>
+
+        <div class="app-side-foot">
+            <a href="{% url 'home' %}" target="_blank">🌐 View online shop</a>
+        </div>
+    </aside>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="app-main">
+        {% if messages %}
+        <div class="app-messages">
+            {% for message in messages %}
+            <div class="app-msg {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- The block where your page content goes -->
+        {% block content %}{% endblock %}
+    </main>
+
+{% endwith %}
+
+    <!-- Menu Toggle Logic -->
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            if (window.innerWidth > 900) {
+                document.body.classList.toggle('side-collapsed');
+            } else {
+                document.body.classList.toggle('side-open');
+            }
+        });
+
+        // Auto-dismiss messages after 5 seconds
+        setTimeout(function () {
+            document.querySelectorAll('.app-msg').forEach(function (m) { m.remove(); });
+        }, 5000);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

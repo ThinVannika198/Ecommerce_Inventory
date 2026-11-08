@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/report.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="report-page">
+
+    <h1>CUSTOMER REPORTS</h1>
+
+    <div class="report-toolbar no-print">
+        <form method="get" action="{% url 'report' %}" class="report-search">
+    
+    <input type="text" name="client_no" value="{{ client_no }}" placeholder="client_no" class="report-input">
+    
+    <button type="submit" class="report-btn">Search</button>
+    <a href="{% url 'report' %}" class="report-btn">Reset</a>
+</form>
+
+        <button type="button" class="report-btn" onclick="window.print()">Preview</button>
+    </div>
+
+    <div class="report-wrap">
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Clientname</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Discount</th>
+                    <th>Invoice Memo</th>
+                    <th>Invoice No</th>
+                    <th>Invoice Date</th>
+                    <th>Employee ID</th>
+                    <th>Invoice Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in invoices %}
+                <tr>
+                    <td>{{ inv.client.clientname|default:"-" }}</td>
+                    <td>{{ inv.client.address|default:"-" }}</td>
+                    <td>{{ inv.client.phone|default:"-" }}</td>
+                    <td>{% if inv.client.discount %}{{ inv.client.discount }}%{% else %}-{% endif %}</td>
+                    <td>{{ inv.invoicememo|default:"-" }}</td>
+                    <td>#INV{{ inv.invoiceno }}</td>
+                    <td>{{ inv.invoice_date|date:"M d, Y" }}</td>
+                    <td>{{ inv.employee_id|default:"-" }}</td>
+                    <td>
+                        <span class="badge-status {% if inv.invoice_status == 'Paid' %}paid{% endif %}">
+                            {{ inv.invoice_status|default:"-" }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="report-empty">No invoices found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p class="report-footer">Total records: {{ total_rows }}</p>
+
+</div>
+{% endblock %}

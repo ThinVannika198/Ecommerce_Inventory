@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - Your Brand</title>
+    <style>
+        body { background-color: #121212; color: #fff; font-family: sans-serif; margin: 0; padding: 40px; }
+        .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 8%;
+        background: rgba(51, 52, 54, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        color: #00ffcc;
+    }
+
+    .nav-links a {
+        color: #f5f7fa;
+        text-decoration: none;
+        margin-left: 30px;
+        font-size: 15px;
+        transition: color 0.3s ease;  
+        background-color: #31363e;
+        padding: 5px 20px 5px 20px;
+        border-radius: 20px;
+    }
+
+    .nav-links a:hover {
+        background-color: #1fa6ea;
+
+        transform: translateY(-2px);
+        box-shadow: 
+            0 0 10px #1fa6ea;
+    }
+        .container { max-width: 800px; margin: auto; }
+        
+        h1 { font-size: 36px; margin-bottom: 20px; }
+        p { color: #bbb; line-height: 1.6; font-size: 16px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+            <div class="logo">ComNika</div>
+            
+            <nav class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'collection' %}">Collection</a>
+                <a href="{% url 'about' %}">About</a>
+                
+                <a href="{% url 'cart_page' %}">Cart({{ cart_count|default:0 }})</a>
+            </nav>
+        </header>
+    <div class="container">
+       
+        <h1>ABOUT US</h1>
+        <p>Welcome to our store! We are dedicated to providing the latest trends and highest quality collections right to your doorstep. Our mission is to blend style, comfort, and accessibility.</p>
+        <p>Founded with a passion for modern fashion and customer satisfaction, every item in our inventory is carefully chosen to elevate your everyday look.</p>
+    </div>
+
+</body>
+</html>

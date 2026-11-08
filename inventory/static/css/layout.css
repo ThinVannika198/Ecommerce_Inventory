@@ -1,0 +1,212 @@
+/* ==========================================================================
+   APP SHELL LAYOUT (Header, Sidebar, Main)
+   ========================================================================== */
+
+/* Reset margins */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    padding: 0 24px;
+    background-color: var(--panel); /* Using your variable */
+    border-bottom: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    box-sizing: border-box;
+}
+
+.app-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--white);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.app-burger {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    display: block; /* Show on all screens to toggle */
+}
+
+.app-header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.app-new-sale {
+    background-color: var(--brand);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.app-new-sale:hover {
+    background-color: var(--brand-dark);
+}
+
+.app-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+}
+
+.app-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: var(--brand);
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.app-user-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+}
+
+.app-user-text strong {
+    font-size: 14px;
+}
+
+.app-logout {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.app-logout:hover {
+    background-color: var(--border);
+    color: var(--white);
+}
+
+/* SIDEBAR */
+.app-sidebar {
+    position: fixed;
+    top: 64px; /* Height of header */
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    z-index: 90;
+    box-sizing: border-box;
+}
+
+.app-sidebar nav {
+    padding: 16px 0;
+}
+
+.app-group {
+    padding: 0 20px;
+    margin: 16px 0 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+}
+
+.app-sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.app-sidebar a:hover {
+    background-color: var(--surface-2);
+    color: var(--white);
+}
+
+.app-sidebar a.active {
+    background-color: var(--brand);
+    color: var(--white);
+    border-left: 4px solid var(--accent);
+}
+
+.app-side-foot {
+    padding: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.app-side-foot a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-block;
+    padding: 0;
+}
+
+/* MAIN CONTENT */
+.app-main {
+    margin-left: 250px; /* Width of sidebar */
+    margin-top: 64px;   /* Height of header */
+    padding: 24px;
+    flex: 1;
+    transition: margin-left 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* LAYOUT STATES (Triggered by JS) */
+body.side-collapsed .app-sidebar {
+    transform: translateX(-100%);
+}
+
+body.side-collapsed .app-main {
+    margin-left: 0;
+}
+
+/* MOBILE VIEW */
+@media (max-width: 900px) {
+    .app-sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .app-main {
+        margin-left: 0;
+    }
+    
+    /* Open sidebar class */
+    body.side-open .app-sidebar {
+        transform: translateX(0);
+    }
+}

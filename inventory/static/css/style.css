@@ -1,0 +1,570 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+body {
+    background-color: #262830;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 8%;
+    background: rgba(51, 52, 54, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #00ffcc;
+}
+
+.nav-links a {
+    color: #f5f7fa;
+    text-decoration: none;
+    margin-left: 30px;
+    font-size: 15px;
+    transition: color 0.3s ease;  
+    background-color: #31363e;
+    padding: 5px 20px 5px 20px;
+    border-radius: 20px;
+}
+
+.nav-links a:hover {
+    background-color: #1fa6ea;
+
+    transform: translateY(-2px);
+    box-shadow: 
+        0 0 10px #1fa6ea;
+}
+/* =========================
+   HERO SECTION
+========================= */
+
+.hero-section {
+    width: 100%;
+    min-height: 550px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 60px 8%;
+    box-sizing: border-box;
+
+    background-color: #ffffff;
+}
+
+
+/* =========================
+   HERO TEXT
+========================= */
+
+.hero-content {
+    width: 45%;
+}
+
+.hero-content h1 {
+    font-size: 38px;
+    line-height: 1.15;
+
+    margin: 0 0 10px;
+
+    color: #111111;
+    font-weight: 800;
+}
+
+.hero-content p {
+    font-size: 20px;
+    line-height: 1.5;
+
+    color: #222222;
+
+    margin: 8px 0;
+}
+
+.hero-content strong {
+    font-weight: 700;
+}
+
+.hero-content h3 {
+    font-size: 20px;
+
+    margin-top: 5px;
+    margin-bottom: 22px;
+
+    color: #111111;
+}
+
+
+/* =========================
+   SHOP BUTTON
+========================= */
+
+.shop-btn {
+    display: inline-block;
+
+    padding: 12px 35px;
+
+    background-color: #062b5c;
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    border-radius: 7px;
+
+    transition: 0.3s;
+}
+
+.shop-btn:hover {
+    background-color: #1991d7;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   HERO IMAGE
+========================= */
+
+.hero-image {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero-image img {
+    width: 80%;
+    max-width: 550px;
+}
+
+.hero-buttons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.signin-btn {
+    display: inline-block;
+    padding: 18px 30px;
+    border: 2px solid #072b5c;
+    border-radius: 8px;
+    background: transparent;
+    color: #072b5c;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.signin-btn:hover {
+    background: #1991d7;
+    color: #fff;
+}
+
+.hero-logout { margin: 0; }
+.hero-hello { font-weight: 600; }
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    .hero-section {
+        flex-direction: column;
+
+        text-align: center;
+
+        padding: 10px 5%;
+    }
+
+    .hero-content {
+        width: 100%;
+    }
+
+    .hero-image {
+        width: 100%;
+
+        margin-top: 30px;
+    }
+
+    .hero-image img {
+        max-width: 500px;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .hero-content h1 {
+        font-size: 30px;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+    }
+
+    .hero-content h3 {
+        font-size: 17px;
+    }
+
+    .shop-btn {
+        font-size: 16px;
+        padding: 10px 25px;
+    }
+}
+
+
+.main-container {
+    flex: 1;
+    padding: 40px 8%;
+
+}
+
+
+.title {
+    font-size: 22px;
+    margin-bottom: 24px;
+    color: #dee4ea;
+    font-weight: 500;
+    text-align: center;
+}
+
+.product_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    
+}
+
+.product-card {
+    background: rgba(22, 28, 48, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    backdrop-filter: blur(16px);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0, 255, 204, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 255, 204, 0.1);
+}
+
+.product-image-container {
+    width: 100%;
+    height: 190px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.product-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-image-container img {
+    transform: scale(1.06);
+}
+
+.product-info {
+    margin-bottom: 18px;
+}
+
+.product-info h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #f8fafc;
+}
+
+.price {
+    font-size: 17px;
+    font-weight: bold;
+    color: #00ffcc;
+    margin-bottom: 4px;
+}
+
+.availability {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.discover-btn {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.discover-btn:hover {
+    background: #00ffcc;
+    color: #0d1322;
+    border-color: #00ffcc;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+}
+
+.no-products {
+    color: #94a3b8;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    background: rgba(22, 28, 48, 0.3);
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.brand-footer {
+            background-color: #5a5e60;
+            padding: 35px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Flex container for the brand items */
+        .brand-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Base brand typography styling */
+        .brand-item {
+            color: #ffffff;
+            font-family: sans-serif;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 1.25rem;
+            opacity: 0.75;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* Custom adjustments per brand to match their signature aesthetic */
+        .brand-item.nike {
+            font-style: italic;
+            letter-spacing: 2px;
+            font-size: 1.4rem;
+        }
+
+        .brand-item.adidas {
+            letter-spacing: 3px;
+            font-weight: 800;
+        }
+
+        .brand-item.crocs {
+            letter-spacing: 1px;
+            text-transform: capitalize;
+            font-weight: 600;
+        }
+
+        .brand-item.loafer {
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        /* Hover effect for interactivity */
+        .brand-item:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .brand-list {
+                gap: 25px;
+            }
+            .brand-item {
+                font-size: 1rem;
+            }
+        }
+/* =========================================
+   SHOPPING CART PAGE STYLES
+   ========================================= */
+.cart-body {
+    background-color: #121212;
+    color: #fff;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+.cart-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* ─── CSS Grid Layout for the "Table" ─── */
+.cart-grid-wrapper {
+    margin-top: 20px;
+    border-bottom: 1px solid #222;
+}
+
+/* Use Grid to perfectly align the columns */
+.cart-header-row, 
+.cart-item-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr 1fr 0.5fr;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-header-row {
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+    color: #888;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.cart-item-row {
+    padding: 20px 0;
+    border-bottom: 1px solid #222;
+    font-size: 15px;
+}
+
+.cart-product-name {
+    font-weight: 500;
+}
+
+/* ─── Quantity Input & Update Button ─── */
+.cart-update-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-qty-input {
+    width: 50px;
+    padding: 6px;
+    background-color: #1e1e2f;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 4px;
+    outline: none;
+}
+
+.cart-btn-update {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.cart-btn-update:hover {
+    background: #555;
+}
+
+.cart-btn-remove {
+    color: #ff4d4d;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.cart-btn-remove:hover {
+    text-decoration: underline;
+}
+
+/* ─── Footer / Totals ─── */
+.cart-footer {
+    margin-top: 40px;
+    text-align: right;
+}
+
+.cart-total-label {
+    color: #888;
+    margin: 0 0 10px 0;
+}
+
+.cart-total-amount {
+    font-size: 32px;
+    margin: 0 0 30px 0;
+}
+
+.cart-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 30px;
+}
+
+.cart-btn-continue {
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.cart-btn-continue:hover {
+    color: #fff;
+}
+
+.cart-btn-checkout {
+    background: #fff;
+    color: #000;
+    padding: 15px 40px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 6px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.cart-btn-checkout:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+}

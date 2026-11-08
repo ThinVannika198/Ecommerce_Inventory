@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="customer-page">
+
+    <div class="top-bar">
+        <h1>Add Customer</h1>
+        <div class="top-bar-right">
+            <a href="{% url 'customers' %}" class="btn-custom">← Back</a>
+        </div>
+    </div>
+
+    {% if errors %}
+    <div class="form-errors">
+        <ul>
+            {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="post" class="customer-form">
+        {% csrf_token %}
+
+        <div class="form-row">
+            <label for="clientname">Name *</label>
+            <input type="text" id="clientname" name="clientname"
+                   value="{{ form_data.clientname }}" maxlength="100" required>
+        </div>
+
+        <div class="form-row">
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" name="phone"
+                   value="{{ form_data.phone }}" maxlength="50">
+        </div>
+
+        <div class="form-row">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address"
+                   value="{{ form_data.address }}" maxlength="255">
+        </div>
+
+        <div class="form-row">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city"
+                   value="{{ form_data.city }}" maxlength="100">
+        </div>
+
+        <div class="form-row">
+            <label for="client_type">Customer type</label>
+            <select id="client_type" name="client_type">
+                <option value="">-- None --</option>
+                {% for t in client_types %}
+                <option value="{{ t.client_type }}"
+                    {% if form_data.client_type == t.client_type|stringformat:"s" %}selected{% endif %}>
+                    {{ t.type_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label for="discount">Discount (%)</label>
+            <input type="number" id="discount" name="discount"
+                   value="{{ form_data.discount }}" min="0" max="100" step="0.01">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-custom">Save Customer</button>
+            <a href="{% url 'customers' %}" class="btn-custom">Cancel</a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
