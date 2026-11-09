@@ -1,0 +1,29 @@
+{% extends 'backoffice/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/suppliers.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="delete-page">
+    <div class="delete-card">
+
+        <div class="delete-icon">⚠️</div>
+        <h1 class="delete-title">Delete Supplier?</h1>
+
+        <p class="delete-text">
+            Are you sure you want to delete
+            <strong class="delete-name">{{ supplier.suppliername }}</strong>?
+            This action cannot be undone.
+        </p>
+
+        <form method="POST" class="delete-actions">
+            {% csrf_token %}
+            <button type="submit" class="btn-confirm-delete">Yes, Delete</button>
+            <a href="{% url 'suppliers' %}" class="btn-cancel">Cancel</a>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

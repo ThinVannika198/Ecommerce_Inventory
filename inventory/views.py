@@ -230,7 +230,7 @@ async def dashboard_view(request):
         'brand_counts_json': json.dumps([b.total_stock for b in brand_data]),
         **await user_ctx(request),
     }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'backoffice/dashboard/dashboard.html', context)
 
 
 # ═════════════════════════════════════════════════════════════
@@ -239,7 +239,7 @@ async def dashboard_view(request):
 async def home_view(request):
     products = [p async for p in Product.objects.all()]
     cart = await get_cart(request)
-    return render(request, 'home.html', {
+    return render(request, 'shop/home.html', {
         'products': products, 'cart_count': len(cart), **await user_ctx(request),
     })
 
@@ -252,7 +252,7 @@ async def collection_view(request):
         qs = qs.filter(producttype_id=category_id)
     products = [p async for p in qs]
     cart = await get_cart(request)
-    return render(request, 'collection.html', {
+    return render(request, 'shop/collection.html', {
         'categories': categories, 'products': products,
         'cart_count': len(cart), **await user_ctx(request),
     })
@@ -260,13 +260,13 @@ async def collection_view(request):
 
 async def about_view(request):
     cart = await get_cart(request)
-    return render(request, 'about.html', {'cart_count': len(cart), **await user_ctx(request)})
+    return render(request, 'shop/about.html', {'cart_count': len(cart), **await user_ctx(request)})
 
 
 async def product_detail_view(request, product_no):
     product = await aget_object_or_404(Product, product_no=product_no)
     cart = await get_cart(request)
-    return render(request, 'product_detail.html', {
+    return render(request, 'shop/product_detail.html', {
         'product': product, 'cart_count': len(cart), **await user_ctx(request),
     })
 
@@ -314,7 +314,7 @@ async def cart_view(request):
         total += line
         items.append({'product_no': product_no, 'productname': item['productname'],
                       'price': item['price'], 'quantity': item['quantity'], 'total_price': line})
-    return render(request, 'cart.html', {
+    return render(request, 'shop/cart.html', {
         'cart_items': items, 'cart_count': len(cart),
         'total_amount': total, **await user_ctx(request),
     })
@@ -359,7 +359,7 @@ async def checkout_view(request):
     ctx = {'total_amount': total_amount, 'cart_count': len(cart), 'errors': [], 'form': {}}
 
     if request.method != 'POST':
-        return render(request, 'checkout.html', ctx)
+        return render(request, 'shop/checkout.html', ctx)
 
     clientname = (request.POST.get('full_name') or '').strip()
     address = (request.POST.get('shipping_address') or '').strip()
@@ -427,7 +427,7 @@ async def checkout_view(request):
 @login_required_async
 async def checkout_success_view(request):
     cart = await get_cart(request)
-    return render(request, 'checkout_success.html', {'cart_count': len(cart)})
+    return render(request, 'shop/checkout_success.html', {'cart_count': len(cart)})
 
 
 # ═════════════════════════════════════════════════════════════
@@ -436,7 +436,7 @@ async def checkout_success_view(request):
 @admin_required
 async def categories_view(request):
     categories = [c async for c in ProductType.objects.all()]
-    return render(request, 'categories.html', {'categories': categories})
+    return render(request, 'backoffice/catalog/categories.html', {'categories': categories})
 
 
 async def add_category_view(request):
@@ -449,7 +449,7 @@ async def add_category_view(request):
             photo=request.FILES.get('photo'),
         )
         return redirect('categories')
-    return render(request, 'add_category.html')
+    return render(request, 'backoffice/catalog/add_category.html')
 
 
 async def edit_category_view(request, category_id):
@@ -463,7 +463,7 @@ async def edit_category_view(request, category_id):
     else:
         form = ProductTypeForm(instance=category)
 
-    return render(request, 'add_category.html', {'form': form, 'category': category})
+    return render(request, 'backoffice/catalog/add_category.html', {'form': form, 'category': category})
 
 
 async def delete_category_view(request, pk):
@@ -482,7 +482,7 @@ async def products_view(request):
     if q:
         qs = qs.filter(productname__icontains=q)
     products = [p async for p in qs]
-    return render(request, 'products.html', {'products': products})
+    return render(request, 'backoffice/catalog/products.html', {'products': products})
 
 
 async def add_product_view(request):
@@ -494,12 +494,10 @@ async def add_product_view(request):
     else:
         form = ProductForm()
     categories = [c async for c in ProductType.objects.all()]
-    return render(request, 'add_product.html', {'form': form, 'categories': categories})
+    return render(request, 'backoffice/catalog/add_product.html', {'form': form, 'categories': categories})
 
 
-async def manager_product_detail_view(request, product_no):
-    product = await aget_object_or_404(Product, product_no=product_no)
-    return render(request, 'manager_product_detail.html', {'product': product})
+
 
 
 async def edit_product_view(request, product_no):
@@ -512,7 +510,7 @@ async def edit_product_view(request, product_no):
     else:
         form = ProductForm(instance=product)
     categories = [c async for c in ProductType.objects.all()]
-    return render(request, 'edit_product.html',
+    return render(request, 'backoffice/catalog/edit_product.html',
                   {'form': form, 'product': product, 'categories': categories})
 
 
@@ -521,7 +519,7 @@ async def delete_product_view(request, product_no):
     if request.method == 'POST':
         await product.adelete()
         return redirect('products')
-    return render(request, 'delete_product.html', {'product': product})
+    return render(request, 'backoffice/catalog/delete_product.html', {'product': product})
 
 
 # ═════════════════════════════════════════════════════════════
@@ -553,7 +551,7 @@ async def suppliers_view(request):
         qs = qs.order_by('-items_bought')[:20]   # slice last, after all filters
 
     suppliers = [s async for s in qs]
-    return render(request, 'suppliers.html', {
+    return render(request, 'backoffice/catalog/suppliers.html', {
         'suppliers': suppliers,
         'q': q,
         'current_status': status,
@@ -568,7 +566,7 @@ async def add_supplier_view(request):
             return redirect('suppliers')
     else:
         form = SupplierForm()
-    return render(request, 'add_supplier.html', {'form': form})
+    return render(request, 'backoffice/catalog/add_supplier.html', {'form': form})
 
 
 async def edit_supplier_view(request, supplier_no):
@@ -580,7 +578,7 @@ async def edit_supplier_view(request, supplier_no):
             return redirect('suppliers')
     else:
         form = SupplierForm(instance=supplier)
-    return render(request, 'edit_supplier.html', {'form': form, 'supplier': supplier})
+    return render(request, 'backoffice/catalog/edit_supplier.html', {'form': form, 'supplier': supplier})
 
 
 async def delete_supplier_view(request, supplier_no):
@@ -588,7 +586,7 @@ async def delete_supplier_view(request, supplier_no):
     if request.method == 'POST':
         await supplier.adelete()
         return redirect('suppliers')
-    return render(request, 'delete_supplier.html', {'supplier': supplier})
+    return render(request, 'backoffice/catalog/delete_supplier.html', {'supplier': supplier})
 
 
 # ═════════════════════════════════════════════════════════════
@@ -621,7 +619,7 @@ async def stock_management_view(request):
             'reorder_level': reorder,
         })
 
-    return render(request, 'stock.html', {
+    return render(request, 'backoffice/inventory/stock.html', {
         'products': rows, 'total_qty': total_qty,
         'low_stock_count': low, 'out_of_stock_count': out,
     })
@@ -662,7 +660,7 @@ async def stock_adjustment_view(request):
         except Exception:
             messages.error(request, "មានបញ្ហាកើតឡើងពេលកំពុងកែតម្រូវស្តុក សូមព្យាយាមម្តងទៀត។")
 
-    return render(request, 'stock_adjustment.html', {'products': products})
+    return render(request, 'backoffice/inventory/stock_adjustment.html', {'products': products})
 
 
 @admin_required
@@ -692,7 +690,7 @@ async def add_purchase_view(request):
 
     suppliers = [s async for s in Supplier.objects.all()]
     products = [p async for p in Product.objects.all()]
-    return render(request, 'add_purchase.html', {'suppliers': suppliers, 'products': products})
+    return render(request, 'backoffice/inventory/add_purchase.html', {'suppliers': suppliers, 'products': products})
 
 
 # ═════════════════════════════════════════════════════════════
@@ -732,7 +730,7 @@ async def orders_view(request):
     store = [i for i in invoices if i.in_store]
     shown = online if channel == 'online' else store if channel == 'store' else invoices
 
-    return render(request, 'orders.html', {
+    return render(request, 'backoffice/sales/orders.html', {
         'orders': shown, 'day': day,
         'day_iso': day.isoformat() if day else '',
         'channel': channel,
@@ -758,7 +756,7 @@ async def order_detail_view(request, invoiceno):
     discount = max(subtotal - total_amount, 0)
     paid = float(invoice.amount_paid or 0)
 
-    return render(request, 'order_detail.html', {
+    return render(request, 'backoffice/sales/order_detail.html', {
         'order': invoice, 'items': items,
         'subtotal': subtotal, 'discount': discount,
         'balance': total_amount - paid,
@@ -768,36 +766,45 @@ async def order_detail_view(request, invoiceno):
 
 async def add_payment_view(request, invoiceno):
     if request.method != 'POST':
-        return redirect('order_detail', invoiceno=invoiceno)
+        return redirect('backoffice/sales/order_detail', invoiceno=invoiceno)
+
+    def _pay():
+        try:
+            # 1. Get the amount from the form
+            amount = Decimal(request.POST.get('amount', '0'))
+        except Exception:
+            raise ValueError("Invalid amount format.")
+
+        with transaction.atomic():
+            # 2. Safely lock and fetch the invoice
+            inv = Invoice.objects.select_for_update().get(invoiceno=invoiceno)
+            
+            # 3. Check if the amount is valid
+            if amount <= 0 or amount > inv.balance:
+                raise ValueError(f"Enter an amount between 0.01 and {inv.balance:.2f}.")
+
+            # 4. Update the paid amount
+            inv.amount_paid += amount
+            
+            # 5. Set the status cleanly
+            if inv.amount_paid >= inv.total_amount:
+                inv.invoice_status = 'Paid'
+            else:
+                inv.invoice_status = 'Partial'
+                
+            # 6. Save to database
+            inv.save(update_fields=['amount_paid', 'invoice_status'])
 
     try:
-        amount = Decimal(request.POST.get('amount', '0'))
-    except Exception:
-        messages.error(request, "Invalid amount.")
-        return redirect('order_detail', invoiceno=invoiceno)
-
-    inv = await Invoice.objects.filter(invoiceno=invoiceno).afirst()
-    if inv is None:
+        await sync_to_async(_pay, thread_sensitive=True)()
+        messages.success(request, "Payment recorded successfully.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    except Invoice.DoesNotExist:
         messages.error(request, "Order not found.")
         return redirect('orders')
-
-    # one atomic UPDATE: only succeeds if the payment does not exceed the balance
-    updated = await Invoice.objects.filter(
-        invoiceno=invoiceno,
-        total_amount__gte=F('amount_paid') + amount,
-    ).aupdate(amount_paid=F('amount_paid') + amount) if amount > 0 else 0
-
-    if not updated:
-        balance = inv.total_amount - inv.amount_paid
-        messages.error(request, f"Enter an amount between 0.01 and {balance:.2f}.")
-    else:
-        await Invoice.objects.filter(invoiceno=invoiceno).aupdate(
-            invoice_status=Case(
-                When(amount_paid__gte=F('total_amount'), then='Paid'),
-                default='Partial'))
-        messages.success(request, "Payment recorded.")
+        
     return redirect('order_detail', invoiceno=invoiceno)
-
 
 # ═════════════════════════════════════════════════════════════
 # POS
@@ -811,7 +818,7 @@ async def pos_view(request):
         async for p in Product.objects.order_by('productname')
     ]
     employees = [e async for e in Employee.objects.order_by('employeename')]
-    return render(request, 'pos.html', {
+    return render(request, 'backoffice/sales/pos.html', {
         'products': products, 'employees': employees, **await user_ctx(request),
     })
 
@@ -936,7 +943,7 @@ async def pos_receipt_view(request, invoiceno):
 
     total = float(invoice.total_amount or 0)
     paid = float(invoice.amount_paid or 0)
-    return render(request, 'pos_receipt.html', {
+    return render(request, 'backoffice/sales/pos_receipt.html', {
         'order': invoice, 'items': items, 'subtotal': total, 'discount': 0.00,
         'total_amount': total, 'paid': paid, 'balance': total - paid,
     })
@@ -976,7 +983,7 @@ async def customers_view(request):
 
     clients = [c async for c in qs]
 
-    return render(request, 'customers.html', {
+    return render(request, 'backoffice/customers/customers.html', {
         'clients': clients,
         'total_clients': len(clients),
         'total_spent_all': sum(c.total_spent for c in clients),
@@ -1028,7 +1035,7 @@ async def add_customer_view(request):
             messages.success(request, "Customer added successfully.")
             return redirect('customers')
 
-    return render(request, 'add_customers.html',
+    return render(request, 'backoffice/customers/add_customers.html',
                   {'errors': errors, 'form_data': form_data, 'client_types': client_types})
 
 
@@ -1047,7 +1054,7 @@ async def report_view(request):
         qs = qs.filter(client__clientname__icontains=clientname)
     invoices = [i async for i in qs]
 
-    return render(request, 'report.html', {
+    return render(request, 'backoffice/dashboard/report.html', {
         'invoices': invoices, 'invoiceno': invoiceno, 'client_no': client_no,
         'clientname': clientname, 'total_rows': len(invoices),
     })
@@ -1063,7 +1070,7 @@ async def employees_view(request):
     if q:
         qs = qs.filter(employeename__icontains=q)
     employees = [e async for e in qs]
-    return render(request, 'employees.html',
+    return render(request, 'backoffice/hr/employees.html',
                   {'employees': employees, 'total_employees': len(employees), 'q': q})
 
 
@@ -1115,7 +1122,7 @@ async def employee_form_view(request, employeeid=None):
                 'address': employee.address or '',
             }
 
-    return render(request, 'employee_form.html',
+    return render(request, 'backoffice/hr/employee_form.html',
                   {'form': form, 'errors': errors, 'jobs': jobs, 'employee': employee})
 
 
@@ -1133,7 +1140,7 @@ async def jobs_view(request):
     edit_id = request.GET.get('edit', '')
     if edit_id.isdigit():
         editing = next((j for j in jobs if j.job_id == int(edit_id)), None)
-    return render(request, 'jobs.html', {'jobs': jobs, 'editing': editing})
+    return render(request, 'backoffice/hr/jobs.html', {'jobs': jobs, 'editing': editing})
 
 
 async def job_save_view(request, job_id=None):
@@ -1205,7 +1212,7 @@ async def login_view(request):
             return redirect(_safe_next(request, 'home'))
         messages.error(request, "Invalid username or password.")
 
-    return render(request, 'login.html', {'next': request.GET.get('next', '')})
+    return render(request, 'shop/login.html', {'next': request.GET.get('next', '')})
 
 
 async def register_view(request):
@@ -1248,7 +1255,7 @@ async def register_view(request):
             messages.success(request, "Account created. Welcome!")
             return redirect(_safe_next(request, 'home'))
 
-    return render(request, 'register.html',
+    return render(request, 'shop/register.html',
                   {'errors': errors, 'form': form, 'next': request.GET.get('next', '')})
 
 
@@ -1297,9 +1304,83 @@ async def login_admin_view(request):
 
         messages.error(request, "Access denied. Invalid credentials.")
 
-    return render(request, 'login_admin.html')
+    return render(request, 'backoffice/auth/login_admin.html')
 
 
 async def logout_admin_view(request):
     await alogout(request)
     return redirect('login_admin')
+
+async def outstanding_balances_view(request):
+    def _get_balances():
+        from .models import Client
+        from django.db.models import Sum
+        
+        # Get all clients and calculate their total invoiced vs total paid
+        clients = Client.objects.annotate(
+            total_invoiced=Sum('invoice__total_amount'),
+            total_paid=Sum('invoice__amount_paid')
+        ).filter(total_invoiced__gt=0)
+        
+        outstanding_list = []
+        total_outstanding_all = 0
+
+        for c in clients:
+            invoiced = c.total_invoiced or 0
+            paid = c.total_paid or 0
+            balance = invoiced - paid
+            
+            if balance > 0:
+                outstanding_list.append({
+                    'client_no': c.client_no,
+                    'clientname': c.clientname,
+                    'phone': c.phone or 'N/A',
+                    'invoiced': invoiced,
+                    'paid': paid,
+                    'balance': balance,
+                })
+                total_outstanding_all += balance
+
+        outstanding_list.sort(key=lambda x: x['balance'], reverse=True)
+        return outstanding_list, total_outstanding_all
+
+    outstanding_list, total_outstanding_all = await sync_to_async(_get_balances, thread_sensitive=True)()
+
+    return render(request, 'backoffice/customers/outstanding_balances.html', {
+        'clients': outstanding_list,
+        'total_outstanding': total_outstanding_all,
+        'user_is_authenticated': request.user.is_authenticated,
+        'user_username': request.user.username if request.user.is_authenticated else "",
+        'user_is_superuser': request.user.is_superuser if request.user.is_authenticated else False,
+    })
+    
+
+async def customer_statement_view(request, client_no):
+    def _get_data():
+        from .models import Client, Invoice
+        from django.db.models import Sum
+        
+        client = Client.objects.filter(client_no=client_no).first()
+        if not client:
+            return None, [], 0, 0
+            
+        # Get all their invoices
+        invoices = list(Invoice.objects.filter(client_id=client_no).order_by('-invoice_date'))
+        
+        total_invoiced = sum(inv.total_amount for inv in invoices)
+        total_paid = sum(inv.amount_paid for inv in invoices)
+        balance = total_invoiced - total_paid
+        
+        return client, invoices, total_invoiced, balance
+
+    client, invoices, total_invoiced, balance = await sync_to_async(_get_data, thread_sensitive=True)()
+
+    if not client:
+        return redirect('outstanding_balances')
+
+    return render(request, 'backoffice/customers/customer_statement.html', {
+        'client': client,
+        'invoices': invoices,
+        'total_invoiced': total_invoiced,
+        'balance': balance,
+    })

@@ -30,7 +30,6 @@ urlpatterns = [
     
     path('products/', views.products_view, name='products'),           # admin list
     path('product/add/', views.add_product_view, name='add_product'),
-    path('products/<int:product_no>/', views.manager_product_detail_view, name='manager_product_detail'),
     path('products/edit/<int:product_no>/', views.edit_product_view, name='edit_product'),
     path('products/delete/<int:product_no>/', views.delete_product_view, name='delete_product'),
     
@@ -66,6 +65,8 @@ urlpatterns = [
     path('jobs/save/<int:job_id>/', views.job_save_view, name='edit_job'),
     path('jobs/delete/<int:job_id>/', views.delete_job_view, name='delete_job'),
     path('report/', views.report_view, name='report'),
+    path('report/outstanding/', views.outstanding_balances_view, name='outstanding_balances'),
+    path('report/outstanding/statement/<int:client_no>/', views.customer_statement_view, name='customer_statement'),
     
     path('login_admin/', views.login_admin_view, name='login_admin'),
     path('logout_admin/', views.logout_admin_view, name='logout_admin'),

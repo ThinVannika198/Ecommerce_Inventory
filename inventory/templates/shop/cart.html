@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Bag</title>
+    <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+</head>
+<body class="cart-body">
+    
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">ComNika</div>
+        <nav class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'collection' %}">Collection</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'cart_page' %}">🛒 Cart({{ cart_count|default:0 }})</a>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <div class="cart-container">
+        <h1>YOUR BAG</h1>
+        
+        <div class="cart-grid-wrapper">
+            <!-- Headers -->
+            <div class="cart-header-row">
+                <div>PRODUCT</div>
+                <div>PRICE</div>
+                <div>QTY</div>
+                <div>SUBTOTAL</div>
+                <div></div> <!-- Empty for remove button -->
+            </div>
+
+            <!-- Items -->
+            {% for item in cart_items %}
+            <div class="cart-item-row">
+                <div class="cart-product-name">{{ item.productname }}</div>
+                <div>${{ item.price|floatformat:2 }}</div>
+                <div>
+                    <form action="{% url 'update_cart' item.product_no %}" method="POST" class="cart-update-form">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="cart-qty-input">
+                        <button type="submit" class="cart-btn-update">Update</button>
+                    </form>
+                </div>
+                <div>${{ item.total_price|floatformat:2 }}</div>
+                <div>
+                    <a href="{% url 'remove_from_cart' item.product_no %}" class="cart-btn-remove">Remove</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Footer / Totals -->
+        {% if cart_items %}
+        <div class="cart-footer">
+            <p class="cart-total-label">Total Amount</p>
+            <h2 class="cart-total-amount">${{ total_amount|floatformat:2 }}</h2>
+            <div class="cart-actions">
+                <a href="{% url 'home' %}" class="cart-btn-continue">Continue Shopping</a>
+                <a href="{% url 'checkout' %}" class="cart-btn-checkout">CHECKOUT NOW</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

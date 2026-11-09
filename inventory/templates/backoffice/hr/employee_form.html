@@ -1,0 +1,75 @@
+{% extends 'backoffice/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/employees.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="emp-page">
+
+    <div class="emp-header">
+        <h1>{% if employee %}Edit Employee{% else %}Add Employee{% endif %}</h1>
+        <a href="{% url 'employees' %}" class="emp-btn emp-outline">← Back</a>
+    </div>
+
+    {% if errors %}
+    <div class="emp-errors">
+        <ul>
+            {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="post" class="emp-form">
+        {% csrf_token %}
+
+        <div class="emp-field">
+            <label for="employeename">Name *</label>
+            <input type="text" id="employeename" name="employeename"
+                   value="{{ form.employeename }}" maxlength="100" required>
+        </div>
+
+        <div class="emp-field">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender">
+                <option value="">-- Select --</option>
+                <option value="Male"   {% if form.gender == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if form.gender == 'Female' %}selected{% endif %}>Female</option>
+                <option value="Other"  {% if form.gender == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+
+        <div class="emp-field">
+            <label for="birthdate">Birth date</label>
+            <input type="date" id="birthdate" name="birthdate" value="{{ form.birthdate }}">
+        </div>
+
+        <div class="emp-field">
+            <label for="job">Job</label>
+            <select id="job" name="job">
+                <option value="">-- None --</option>
+                {% for j in jobs %}
+                <option value="{{ j.job_id }}"
+                    {% if form.job == j.job_id|stringformat:"s" %}selected{% endif %}>
+                    {{ j.job_title }}
+                </option>
+                {% endfor %}
+            </select>
+            <a href="{% url 'jobs' %}" class="emp-link">+ Add a new job</a>
+        </div>
+
+        <div class="emp-field">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address"
+                   value="{{ form.address }}" maxlength="255">
+        </div>
+
+        <div class="emp-form-actions">
+            <button type="submit" class="emp-btn emp-solid">Save Employee</button>
+            <a href="{% url 'employees' %}" class="emp-btn emp-outline">Cancel</a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

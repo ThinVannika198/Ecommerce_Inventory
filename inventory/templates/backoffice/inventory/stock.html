@@ -1,0 +1,101 @@
+{% extends 'backoffice/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="stock-container">
+
+    <!-- Header Section -->
+    <div class="stock-header">
+        <div>
+            <h1>Stock Management</h1>
+            <p>Monitor real-time inventory levels, reorder points, and stock history.</p>
+        </div>
+        <div class="stock-actions">
+            <a href="{% url 'products' %}" class="btn-secondary">View Products</a>
+            <a href="{% url 'stock_adjustment' %}" class="btn-primary">+ Stock Adjustment</a>
+        </div>
+    </div>
+
+    <!-- Stats Cards Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-title">TOTAL ITEMS IN STOCK</span>
+            <h2 class="stat-value">{{ total_qty|default:0 }} pcs</h2>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">LOW STOCK ALERTS</span>
+            <h2 class="stat-value warning">{{ low_stock_count|default:0 }} Products</h2>
+        </div>
+        <div class="stat-card">
+            <span class="stat-title">OUT OF STOCK</span>
+            <h2 class="stat-value danger">{{ out_of_stock_count|default:0 }} Product</h2>
+        </div>
+    </div>
+
+    <!-- Stock Table Card -->
+    <div class="stock-table-card">
+       <p style="color: green; font-weight: bold;">
+    Total Products Rendered: {{ products|length }}
+</p>
+        <table class="stock-table">
+            <thead>
+                <tr>
+                    <th>PRODUCT</th>
+                    <th>SKU</th>
+                    <th>CATEGORY</th>
+                    <th>QTY ON HAND</th>
+                    <th>REORDER LEVEL</th>
+                    <th>STATUS</th>
+                    <th style="text-align: right;">ACTIONS</th>
+                </tr>
+            </thead>
+                        <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            {% if product.photo_url %}
+                                <img src="{{ product.photo_url }}" alt="{{ product.productname }}" class="product-img">
+                            {% else %}
+                                <div class="product-img placeholder-img"></div>
+                            {% endif %}
+                            <span class="product-name">{{ product.productname }}</span>
+                        </div>
+                    </td>
+                    <td>PRD-{{ product.product_no }}</td>
+                    
+                    <!-- Using the safe dictionary key -->
+                    <td>{{ product.category }}</td>
+                    
+                    <td style="font-weight: 600;">{{ product.qty_on_hand }} pcs</td>
+                    <td>{{ product.reorder_level }} pcs</td>
+                    <td>
+                        {% if product.qty_on_hand == 0 %}
+                            <span class="badge badge-danger">Out of stock</span>
+                        {% elif product.qty_on_hand <= product.reorder_level %}
+                            <span class="badge badge-warning">Low stock</span>
+                        {% else %}
+                            <span class="badge badge-success">In stock</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        <a href="{% url 'edit_product' product.product_no %}" class="btn-update">Update</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: #9ca3af; padding: 40px;">
+                        No stock records available.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'backoffice/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+
+{% endblock %}
+
+{% block content %}
+<div class="stock-container">
+    
+    <!-- Header -->
+    <div class="report-header print-hide">
+        <div>
+            <h1 class="report-title">Outstanding Balances</h1>
+            <p class="report-subtitle">List of customers who have unpaid invoices.</p>
+        </div>
+        <div class="report-actions">
+            <a href="{% url 'report' %}" class="btn-secondary">← Back</a>
+            <button onclick="window.print()" class="btn-print-report">🖨️ Print Report</button>
+        </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="report-stat-card">
+        <span class="report-stat-label">TOTAL OUTSTANDING AMOUNT</span>
+        <h2 class="report-stat-value">${{ total_outstanding|floatformat:2 }}</h2>
+    </div>
+
+    <!-- Data Table -->
+    <div class="stock-table-card">
+        <table class="stock-table">
+            <thead>
+                <tr>
+                    <th>CLIENT ID</th>
+                    <th>NAME</th>
+                    <th>PHONE</th>
+                    <th>INVOICED</th>
+                    <th>PAID</th>
+                    <th>BALANCE DUE</th>
+                    <th class="print-hide">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td>#CL{{ client.client_no }}</td>
+                    <td class="td-bold">{{ client.clientname }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>${{ client.invoiced|floatformat:2 }}</td>
+                    <td>${{ client.paid|floatformat:2 }}</td>
+                    <td class="td-danger">${{ client.balance|floatformat:2 }}</td>
+                    <td class="print-hide">
+                        <a href="{% url 'customers' %}?id={{ client.client_no }}" class="btn-action-profile">Profile</a>
+                        <a href="{% url 'customer_statement' client.client_no %}" target="_blank" class="btn-action-statement">📄 Statement</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="td-empty">
+                        🎉 Excellent! All customers have paid their balances in full.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inventory - ComNika</title>
+        <link rel="icon" type="image/png" href="{% static 'images/invenicon.png' %}">
+        <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+    </head>
+
+    <body>
+        <header class="navbar">
+            <div class="logo">ComNika</div>
+
+            <nav class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'collection' %}">Collection</a>
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'cart_page' %}">🛒 Cart({{ cart_count|default:0 }})</a>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+
+            <div class="hero-content">
+                <h1>
+                    SILVER. BOLD<br>
+                    UNSTOPPABLE
+                </h1>
+
+                <p>
+                    Step into the future with our modern Silver &amp; Red sneakers.
+                    Designed with a sleek metallic finish, bold red accents,
+                    and a comfortable cushioned sole, they bring together
+                    <strong>style, comfort, and confidence</strong>
+                    in one powerful design.
+                </p>
+
+                <p>
+                    Whether you're heading out with friends, going to class,
+                    or exploring the city, these sneakers are made to make
+                    every step stand out.
+                </p>
+
+                <h3>Make your move. Make it yours.</h3>
+
+                <div class="hero-buttons">
+                    <a href="{% url 'collection' %}" class="shop-btn">SHOP NOW</a>
+
+                    {% if me.is_authenticated %}
+                        <span class="hero-hello">Hi, {{ me.username }}</span>
+                        <form method="post" action="{% url 'logout' %}" class="hero-logout">
+                            {% csrf_token %}
+                            <button type="submit" class="signin-btn">SIGN OUT</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="signin-btn">SIGN IN</a>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <div class="hero-image">
+                <img
+                    src="{% static 'images/silver_red_shoe.png' %}"
+                    alt="Silver and Red Modern Sneaker"
+                >
+            </div>
+
+        </section>
+
+        <main class="main-container">
+            <section class="latest-section">
+                <div><h2 class=" title">Latest Arrivals</h2></div>
+                
+                <div class="product_container">
+                    {% for product in products %}
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            {% if product.photo %}
+                                <img src="{{ product.photo.url }}" alt="{{ product.productname }}">
+                            {% else %}
+                                <img src="{% static 'images/shoes.png' %}" alt="default shoes">
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <h3>{{ product.productname }}</h3>
+                            <p class="price">${{ product.sell_price }}</p>
+                            <p class="availability">Available: {{ product.qty_on_hand }}</p>
+                        </div>
+
+                        {% if product.product_no %}
+                        <a href="{% url 'product_detail' product.product_no %}">
+                            <button type="button" class="discover-btn">View Details</button>
+                        </a>
+                        {% endif %}
+
+                    </div>
+                    {% empty %}
+                    <p class="no-products">No products available in inventory.</p>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+
+        <footer class="brand-footer">
+            <ul class="brand-list">
+                <li class="brand-item loafer">Loafer</li>
+                <li class="brand-item nike">Nike</li>
+                <li class="brand-item adidas">Adidas</li>
+                <li class="brand-item crocs">Crocs</li>
+            </ul>
+        </footer>
+    </body>
+</html>

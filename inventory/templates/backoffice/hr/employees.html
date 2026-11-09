@@ -1,0 +1,77 @@
+{% extends 'backoffice/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'backoffice/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="emp-page">
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="emp-alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="emp-header">
+        <div>
+            <h1>Employees</h1>
+            <p class="emp-sub">Total employees: <strong>{{ total_employees }}</strong></p>
+        </div>
+        <!-- Group buttons together on the right -->
+        <div class="emp-header-actions">
+            <a href="/jobs" class="emp-btn emp-outline">💼 Manage Jobs</a>
+            <a href="{% url 'add_employee' %}" class="emp-btn emp-solid">+ New Employee</a>
+        </div>
+
+    </div>
+
+    <form method="get" action="{% url 'employees' %}" class="emp-search">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search by name">
+        <button type="submit" class="emp-btn emp-solid">Search</button>
+        <a href="{% url 'employees' %}" class="emp-btn emp-outline">Reset</a>
+    </form>
+
+    <div class="emp-table-wrap">
+        <table class="emp-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Birth date</th>
+                    <th>Job</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in employees %}
+                <tr>
+                    <td>{{ e.employeeid }}</td>
+                    <td>{{ e.employeename }}</td>
+                    <td>{{ e.gender|default:"-" }}</td>
+                    <td>{{ e.birthdate|date:"M d, Y"|default:"-" }}</td>
+                    <td>{{ e.job.job_title|default:"-" }}</td>
+                    <td>{{ e.address|default:"-" }}</td>
+                    <td>
+                        <div class="emp-actions">
+                            <a href="{% url 'edit_employee' e.employeeid %}" class="emp-btn emp-small emp-solid">Edit</a>
+                            <form method="post" action="{% url 'delete_employee' e.employeeid %}"
+                                  onsubmit="return confirm('Delete {{ e.employeename|escapejs }}?');">
+                                {% csrf_token %}
+                                <button type="submit" class="emp-btn emp-small emp-outline">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="emp-empty">No employees found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

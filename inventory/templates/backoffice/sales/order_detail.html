@@ -1,0 +1,169 @@
+{% extends 'backoffice/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="order-detail-wrapper">
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert-box {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Header -->
+    <div class="order-header-flex">
+        <div class="order-title-area">
+            <h2>Order ID: #INV{{ order.invoiceno }}</h2>
+
+            {% if order.invoice_status %}
+            <span class="badge badge-payment">{{ order.invoice_status }}</span>
+            {% endif %}
+
+            <span class="badge">
+                {% if order.is_store %}🏪 In-Store{% else %}🌐 Online{% endif %}
+            </span>
+
+            <p class="order-date">
+                {{ order.invoice_date|date:"F j, Y, g:i a" }}
+            </p>
+        </div>
+
+        <div class="order-actions-top">
+            <a href="{% url 'orders' %}" class="btn-dark-action">Back to orders</a>
+            <a href="{% url 'pos' %}" class="btn-dark-action">+ New Sale</a>
+            <a href="{% url 'pos_receipt' order.invoiceno %}" class="btn-dark-action">🧾 Receipt</a>
+        </div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="order-grid-layout">
+
+        <!-- LEFT: items + summary -->
+        <div>
+
+            <div class="order-card">
+                <h3>Order Items</h3>
+
+                {% for item in items %}
+                <div class="order-item-row">
+                    <div class="order-item-info">
+                        <div class="order-item-img">📦</div>
+                        <div>
+                            <h4 class="item-name">{{ item.productname }}</h4>
+                            <p class="item-qty">
+                                {{ item.qty }} × ${{ item.price|floatformat:2 }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item-price">
+                        ${{ item.line_total|floatformat:2 }}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="empty-note">No items in this order.</p>
+                {% endfor %}
+            </div>
+
+            <div class="order-card">
+                <h3>Order Summary</h3>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>${{ subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <span>${{ discount|floatformat:2 }}</span>
+                </div>
+                
+                <div class="summary-total-row">
+                    <span>Total</span>
+                    <span>${{ order.total_amount|floatformat:2 }}</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Paid</span>
+                    <span>${{ order.amount_paid|floatformat:2 }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Balance due</span>
+                    <span>${{ balance|floatformat:2 }}</span>
+                </div>
+
+                {% if order.balance > 0 %}
+                <form method="post" action="{% url 'add_payment' order.invoiceno %}" class="pay-form">
+                    {% csrf_token %}
+                    <input type="number" name="amount" step="0.01" min="0.01"
+                           max="{{ order.balance }}" placeholder="Amount received" required>
+                    <button type="submit" class="btn-primary-action">Record payment</button>
+                </form>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- RIGHT: notes + customer -->
+        <div>
+
+            <div class="order-card">
+                <h4 class="card-label">Notes</h4>
+                <p class="card-value">
+                    {{ order.invoicememo|default:"No notes" }}
+                </p>
+            </div>
+
+            <div class="order-card">
+                <h4 class="card-label">Customer</h4>
+                <p class="card-value strong">
+                    👤
+                    {% if order.client %}
+                        {{ order.client.clientname }}
+                    {% elif order.is_store %}
+                        Walk-in customer
+                    {% else %}
+                        Guest
+                    {% endif %}
+                </p>
+            </div>
+            <div class="order-card">
+                <h4 class="card-label">Cashier</h4>
+                <p class="card-value">
+                    🧾 
+                    {% if cashier_name %}
+                    <strong>{{ cashier_name }}</strong>
+                    {% else %}
+                        Not Recorded
+                    {% endif %}
+                </p>
+            </div>
+            <div class="order-card">
+                <h4 class="card-label">Contact Information</h4>
+                <p class="card-value">
+                    ✉ {{ order.client.phone|default:"No phone provided" }}
+                </p>
+            </div>
+
+            {% if order.is_store %}
+            <div class="order-card">
+                <h4 class="card-label">Pickup</h4>
+                <p class="card-value">🏪 Paid and collected at the store. No shipping needed.</p>
+            </div>
+
+            {% else %}
+            <div class="order-card">
+                <h4 class="card-label">Shipping Address</h4>
+                <p class="card-value pre-line">
+                    📍 {{ order.client.address|default:"No address provided" }}
+                </p>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

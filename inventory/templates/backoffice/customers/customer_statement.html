@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Statement - {{ client.clientname }}</title>
+    <link rel="stylesheet" href="{% static 'backoffice/css/dashboard.css' %}">
+    <!-- Link to the new print-specific CSS -->
+    <link rel="stylesheet" href="{% static 'css/print.css' %}" media="print">
+</head>
+<body class="statement-body" onload="window.print()">
+
+    <button class="btn-print-statement" onclick="window.print()">🖨️ Print Statement</button>
+
+    <div class="statement-header">
+        <h1>ComNika Store</h1>
+        <p>Customer Statement of Account</p>
+    </div>
+
+    <div class="statement-client-info">
+        <strong>Customer:</strong> {{ client.clientname }}<br>
+        <strong>Phone:</strong> {{ client.phone|default:"N/A" }}<br>
+        <strong>Address:</strong> {{ client.address|default:"N/A" }}<br>
+        <strong>Date Printed:</strong> {% now "F j, Y" %}
+    </div>
+
+    <table class="statement-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Invoice #</th>
+                <th>Status</th>
+                <th class="text-right">Total Amount</th>
+                <th class="text-right">Amount Paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inv in invoices %}
+            <tr>
+                <td>{{ inv.invoice_date|date:"Y-m-d" }}</td>
+                <td>#INV{{ inv.invoiceno }}</td>
+                <td>{{ inv.invoice_status }}</td>
+                <td class="text-right">${{ inv.total_amount|floatformat:2 }}</td>
+                <td class="text-right">${{ inv.amount_paid|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No invoices found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="statement-totals">
+        <div class="totals-row">
+            <span>Total Invoiced:</span>
+            <span>${{ total_invoiced|floatformat:2 }}</span>
+        </div>
+        <div class="totals-row final">
+            <span>Balance Due:</span>
+            <span>${{ balance|floatformat:2 }}</span>
+        </div>
+    </div>
+
+</body>
+</html>
